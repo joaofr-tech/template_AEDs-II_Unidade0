@@ -36,3 +36,7 @@
 **/*.exe
 
 desktop.ini
+
+.idea
+
+template_AEDs-II_Unidade0.iml
