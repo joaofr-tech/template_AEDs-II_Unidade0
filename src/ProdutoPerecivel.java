@@ -1,42 +1,67 @@
-import java.text.NumberFormat;
-import java.time.LocalDateTime;
 
-import javax.management.RuntimeErrorException;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class ProdutoPerecivel extends Produto{
 
-    private static final double DESCONTO = 0.25;
-    private static final int PRAZO_DESCONTO = 7;
-    private LocalDateTime dataDeValidade;
+	private static final double DESCONTO = 0.25;
+	
+	private static final int PRAZO_DESCONTO = 7;
+	
+	private LocalDate dataDeValidade;
+	
+	public ProdutoPerecivel(String desc, double precoCusto, double margemLucro, LocalDate validade) {
+		
+		super(desc, precoCusto, margemLucro);
+		
+		if (validade.isBefore(LocalDate.now())) {
+			throw new IllegalArgumentException("Data de validade do produto é anterior ao dia de hoje!");
+		}
+		dataDeValidade = validade;
+	}
+	
+	public ProdutoPerecivel(String desc, double precoCusto, LocalDate validade) {
+		
+		super(desc, precoCusto);
+		
+		if (validade.isBefore(LocalDate.now())) {
+			throw new IllegalArgumentException("Data de validade do produto é anterior ao dia de hoje!");
+		}
+		dataDeValidade = validade;
+	}
 
-
-    public ProdutoPerecivel(String desc, double precoCusto, double margemLucro, LocalDateTime dataDeValidade){
-        super(desc, precoCusto, margemLucro);
-        setDataDeValidade(dataDeValidade);
-    }
-
-    public void setDataDeValidade(LocalDateTime dataDeValidade){
-        if (dataDeValidade.isBefore(LocalDateTime.now())){
-            throw new IllegalArgumentException("essa data nao poh");
-        }
-        this.dataDeValidade = dataDeValidade;
-    }
-
-    @Override
-    public double valorDeVenda(){
-
-        if (dataDeValidade.isBefore(LocalDateTime.now())) {
-            throw new IllegalStateException("Produto fora da validade.");
-        }
-
-       if (dataDeValidade.isAfter(LocalDateTime.now().plusDays(PRAZO_DESCONTO))){
-           return super.valorDeVenda() * (1 - DESCONTO);
-       }
-        return super.valorDeVenda();
-    }
-
+	@Override
+	public double valorDeVenda() {
+		
+		double precoVenda;
+		
+		if (dataDeValidade.isBefore(LocalDate.now())) {
+			throw new IllegalArgumentException("Data de validade do produto é anterior ao dia de hoje!");
+		}
+		
+		precoVenda = (precoCusto * (1.0 + margemLucro));
+				
+		if (LocalDate.now().until(dataDeValidade).getDays() <= PRAZO_DESCONTO) {
+			precoVenda = precoVenda * (1.0 - DESCONTO);
+		}
+		
+		return precoVenda;
+	}
+	
     @Override
     public String toString(){
-        return super.toString();
+    	
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        
+        String dados = super.toString();
+        dados += "\nVálido até " + formato.format(dataDeValidade);
+        
+        return dados;
     }
+
+	@Override
+    public String gerarDadosTexto() {
+		return null;
+	}
 }

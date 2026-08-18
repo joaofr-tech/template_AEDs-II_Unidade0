@@ -1,17 +1,16 @@
 import java.text.NumberFormat;
-import java.time.LocalDateTime;
 
-public class Produto{
+public abstract class Produto {
 	
 	private static final double MARGEM_PADRAO = 0.2;
-	private String descricao;
-	private double precoCusto;
-	private double margemLucro;
-
+	protected String descricao;
+	protected double precoCusto;
+	protected double margemLucro;
+	
 	private void init(String desc, double precoCusto, double margemLucro) {
 		
 		if ((desc.length() >= 3) && (precoCusto > 0.0) && (margemLucro > 0.0)) {
-			this.descricao = desc;
+			descricao = desc;
 			this.precoCusto = precoCusto;
 			this.margemLucro = margemLucro;
 		} else {
@@ -19,24 +18,38 @@ public class Produto{
 		}
 	}
 	
-	public Produto(String desc, double precoCusto, double margemLucro) {
+	protected Produto(String desc, double precoCusto, double margemLucro) {
 		init(desc, precoCusto, margemLucro);
 	}
 	
-	public Produto(String desc, double precoCusto) {
+	protected Produto(String desc, double precoCusto) {
 		init(desc, precoCusto, MARGEM_PADRAO);
 	}
 	
-	public double valorDeVenda() {
-		return (precoCusto * (1.0 + margemLucro));
-	}
+	public abstract double valorDeVenda();
 	
     @Override
 	public String toString() {
     	
     	NumberFormat moeda = NumberFormat.getCurrencyInstance();
     	
-		return String.format("NOME: " + descricao + ": " + moeda.format(valorDeVenda()));
+    	return String.format("NOME: " + descricao + ": " + moeda.format(valorDeVenda()));
 	}
+    
+    @Override
+    public boolean equals(Object obj) {
 
+		if (!(obj instanceof Produto)){
+			return false;
+		}
+
+		Produto p2 = (Produto) obj;
+		return this.descricao.equalsIgnoreCase(p2.descricao);
+    }
+    
+    static Produto criarDoTexto(String linha) {
+    	return null;
+    }
+    	
+    public abstract String gerarDadosTexto();
 }

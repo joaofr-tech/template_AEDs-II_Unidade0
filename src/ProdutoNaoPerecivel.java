@@ -1,14 +1,20 @@
+public class ProdutoNaoPerecivel extends Produto{
 
-public class ProdutoNaoPerecivel extends Produto {
-    public ProdutoNaoPerecivel(String desc, double precoCusto, double margemLucro){
-        super(desc, precoCusto, margemLucro);
-    }
+	public ProdutoNaoPerecivel(String desc, double precoCusto, double margemLucro) {
+		super(desc, precoCusto, margemLucro);
+	}
+	
+	public ProdutoNaoPerecivel(String desc, double precoCusto) {
+		super(desc, precoCusto);
+	}
 
-    public ProdutoNaoPerecivel(String desc, double precoCusto){
-        super(desc, precoCusto);
-    }
+	@Override
+	public double valorDeVenda() {
+		return (precoCusto * (1.0 + margemLucro));
+	}
 
-    public double valorDeVenda(){
-        return super.valorDeVenda();
+	@Override
+    public String gerarDadosTexto() {
+    	return null;
     }
 }
